@@ -111,7 +111,7 @@ public class WordsGridBuilder : MonoBehaviour
             }
         }
 
-        var lettersInput = FindObjectOfType<LettersInput>();
+        var lettersInput = FindObjectOfType<LettersInputManager>();
         lettersInput.Initialize(keyChars.ToArray());
     }
 
