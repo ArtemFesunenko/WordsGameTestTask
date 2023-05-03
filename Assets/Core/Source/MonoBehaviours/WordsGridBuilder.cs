@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -183,10 +184,10 @@ public class WordsGridBuilder : MonoBehaviour
             }
         }
         
-        Debug.Log(wordMatched);
+        Debug.Log($"Word matched: {wordMatched}");
     }
 
-    private void OpenWord(WordData wordData)
+    private async void OpenWord(WordData wordData)
     {
         var pos = wordData.StartPosition;
         var roundedXPos = Mathf.RoundToInt(pos.x);
@@ -194,11 +195,12 @@ public class WordsGridBuilder : MonoBehaviour
 
         for (int c = 0; c < wordData.Word.Length; c++)
         {
-            var currentLetter = wordData.Word[c];
             var currentXPos = wordData.Direction == WordDirectionType.horizontal ? roundedXPos + c : roundedXPos;
             var currentYPos = wordData.Direction == WordDirectionType.vertical ? roundedYPos + c : roundedYPos;
 
-            objectsGrid[currentXPos, currentYPos].GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+            var textMesh = objectsGrid[currentXPos, currentYPos].GetComponentInChildren<TextMeshProUGUI>();
+            textMesh.enabled = true;
+            await TextSizeAnimationTask(textMesh, Vector2.one * 1.5f, 0.1f);
         }
 
         if (openedWords.Contains(wordData) == false)
@@ -209,6 +211,20 @@ public class WordsGridBuilder : MonoBehaviour
         if (openedWords.Count == gridData.WordDatas.Length)
         {
             SceneManager.LoadScene(0);
+        }
+    }
+
+    async Task TextSizeAnimationTask(TextMeshProUGUI textMesh, Vector2 targetScale, float time)
+    {
+        float taskTime = time * 1000;
+        float interpolator;
+        var startScale = textMesh.transform.localScale;
+        while (taskTime > 0)
+        {
+            interpolator = Mathf.InverseLerp(time, 0, taskTime / 1000);
+            textMesh.transform.localScale = Vector2.Lerp(targetScale, startScale, interpolator);
+            await Task.Delay(1);
+            taskTime--;
         }
     }
 }
