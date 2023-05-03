@@ -186,7 +186,7 @@ public class WordsGridBuilder : MonoBehaviour
 
         if (wordMatched == false)
         {
-            GridShakeAnimation(0.15f, 10f);
+            GridShakeAnimation(0.15f, 10f, 10);
         }
     }
 
@@ -231,15 +231,16 @@ public class WordsGridBuilder : MonoBehaviour
         }
     }
 
-    async Task GridShakeAnimation(float duration, float strength)
+    async Task GridShakeAnimation(float duration, float strength, int shakesAmount = 10)
     {
         var startPosition = transform.position;
         var taskTime = duration * 1000;
+        int tick = Mathf.RoundToInt(taskTime) / shakesAmount;
         while (taskTime > 0)
         {
             transform.position = startPosition + new Vector3(UnityEngine.Random.insideUnitCircle.x, UnityEngine.Random.insideUnitCircle.y, transform.position.z) * strength;
-            await Task.Delay(1);
-            taskTime--;
+            await Task.Delay(tick);
+            taskTime -= tick;
         }
         transform.position = startPosition;
     }
