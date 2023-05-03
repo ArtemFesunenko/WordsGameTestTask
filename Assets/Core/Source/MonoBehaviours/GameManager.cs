@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private WordsGridBuilder wordsGridBuilder;
     [SerializeField] private LettersInputManager lettersInputManager;
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip clip;
+    [SerializeField] private AudioClip negativeClip;
+    [SerializeField] private AudioClip positiveClip;
 
     private GameConfigData gameConfigData;
 
@@ -62,12 +63,13 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_EDITOR
     [ContextMenu("Create Example Game Config")]
-    [MenuItem("WordsGame / Create Example Game Config")]
+    //[MenuItem("WordsGame / Create Example Game Config")]
 #endif
     private void CreateExampleGameConfig()
     {
         var dataPath = Path.Combine(Application.dataPath, "gameConfig.json");
         GameConfigData newGameConfigData = new GameConfigData();
+        newGameConfigData.CorrectSoundEnabled = true;
         newGameConfigData.ErrorSoundEnabled = true;
         newGameConfigData.ErrorScreenShakeEnabled = true;
         newGameConfigData.ErrorScreenShakeDuration = 0.15f;
@@ -78,7 +80,7 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_EDITOR
     [ContextMenu("Create Example Grid Config")]
-    [MenuItem("WordsGame / Create Example Grid Config")]
+    //[MenuItem("WordsGame / Create Example Grid Config")]
 #endif
     private void CreateExampleGridConfig()
     {
@@ -95,31 +97,31 @@ public class GameManager : MonoBehaviour
         WordData firstWord = new WordData();
         firstWord.Word = "банк";
         firstWord.Direction = WordDirectionType.horizontal;
-        firstWord.StartPosition = new Vector2(2, 0);
+        firstWord.StartPosition = new Vector2Int(2, 0);
         gridData.WordDatas[0] = firstWord;
 
         WordData secondWord = new WordData();
         secondWord.Word = "клан";
         secondWord.Direction = WordDirectionType.vertical;
-        secondWord.StartPosition = new Vector2(5, 0);
+        secondWord.StartPosition = new Vector2Int(5, 0);
         gridData.WordDatas[1] = secondWord;
 
         WordData thirdWord = new WordData();
         thirdWord.Word = "бал";
         thirdWord.Direction = WordDirectionType.horizontal;
-        thirdWord.StartPosition = new Vector2(0, 1);
+        thirdWord.StartPosition = new Vector2Int(0, 1);
         gridData.WordDatas[2] = thirdWord;
 
         WordData fourthWord = new WordData();
         fourthWord.Word = "бланк";
         fourthWord.Direction = WordDirectionType.vertical;
-        fourthWord.StartPosition = new Vector2(2, 0);
+        fourthWord.StartPosition = new Vector2Int(2, 0);
         gridData.WordDatas[3] = fourthWord;
 
         WordData fifthWord = new WordData();
         fifthWord.Word = "бак";
         fifthWord.Direction = WordDirectionType.horizontal;
-        fifthWord.StartPosition = new Vector2(0, 4);
+        fifthWord.StartPosition = new Vector2Int(0, 4);
         gridData.WordDatas[4] = fifthWord;
 
         return gridData;
@@ -177,7 +179,7 @@ public class GameManager : MonoBehaviour
         {
             if (gameConfigData.ErrorSoundEnabled == true)
             {
-                audioSource.PlayOneShot(clip);
+                audioSource.PlayOneShot(negativeClip);
             }
             if (gameConfigData.ErrorScreenShakeEnabled == true)
             {
@@ -186,6 +188,13 @@ public class GameManager : MonoBehaviour
                     gameConfigData.ErrorScreenShakeDuration,
                     gameConfigData.ErrorScreenShakeStrength,
                     gameConfigData.ErrorScreenShakeShakesAmount);
+            }
+        }
+        else
+        {
+            if (gameConfigData.CorrectSoundEnabled == true)
+            {
+                audioSource.PlayOneShot(positiveClip);
             }
         }
     }

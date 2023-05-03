@@ -53,14 +53,12 @@ public class WordsGridBuilder : MonoBehaviour
         {
             var currentData = gridData.WordDatas[i];
             var pos = currentData.StartPosition;
-            var roundedXPos = Mathf.RoundToInt(pos.x);
-            var roundedYPos = Mathf.RoundToInt(pos.y);
 
             for (int c = 0; c < currentData.Word.Length; c++)
             {
                 var currentLetter = currentData.Word[c];
-                var currentXPos = currentData.Direction == WordDirectionType.horizontal ? roundedXPos + c : roundedXPos;
-                var currentYPos = currentData.Direction == WordDirectionType.vertical ? roundedYPos + c : roundedYPos;
+                var currentXPos = currentData.Direction == WordDirectionType.horizontal ? pos.x + c : pos.x;
+                var currentYPos = currentData.Direction == WordDirectionType.vertical ? pos.y + c : pos.y;
 
                 if (actualXSize <= currentXPos)
                 {
@@ -133,13 +131,11 @@ public class WordsGridBuilder : MonoBehaviour
     private async void OpenWord(WordData wordData)
     {
         var pos = wordData.StartPosition;
-        var roundedXPos = Mathf.RoundToInt(pos.x);
-        var roundedYPos = Mathf.RoundToInt(pos.y);
 
         for (int c = 0; c < wordData.Word.Length; c++)
         {
-            var currentXPos = wordData.Direction == WordDirectionType.horizontal ? roundedXPos + c : roundedXPos;
-            var currentYPos = wordData.Direction == WordDirectionType.vertical ? roundedYPos + c : roundedYPos;
+            var currentXPos = wordData.Direction == WordDirectionType.horizontal ? pos.x + c : pos.x;
+            var currentYPos = wordData.Direction == WordDirectionType.vertical ? pos.y + c : pos.y;
 
             var textMesh = objectsGrid[currentXPos, currentYPos].GetComponentInChildren<TextMeshProUGUI>();
             textMesh.enabled = true;

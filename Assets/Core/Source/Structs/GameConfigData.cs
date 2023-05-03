@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public struct GameConfigData
 {
+    public bool CorrectSoundEnabled;
     public bool ErrorSoundEnabled;
     public bool ErrorScreenShakeEnabled;
     public float ErrorScreenShakeDuration;

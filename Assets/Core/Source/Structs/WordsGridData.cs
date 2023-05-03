@@ -9,7 +9,7 @@ public struct WordsGridData
 [System.Serializable]
 public struct WordData
 {
-    public Vector2 StartPosition;
+    public Vector2Int StartPosition;
     public WordDirectionType Direction;
     public string Word;
 }

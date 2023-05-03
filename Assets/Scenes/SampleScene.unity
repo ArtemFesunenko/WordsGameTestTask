@@ -824,7 +824,8 @@ MonoBehaviour:
   wordsGridBuilder: {fileID: 1204163218}
   lettersInputManager: {fileID: 505256165}
   audioSource: {fileID: 461573147}
-  clip: {fileID: 8300000, guid: ab8cc14de20b99540bf17ab3de20e9dc, type: 3}
+  negativeClip: {fileID: 8300000, guid: ab8cc14de20b99540bf17ab3de20e9dc, type: 3}
+  positiveClip: {fileID: 8300000, guid: cd3e528c20c74b844aa37506dbc9ebf9, type: 3}
 --- !u!4 &1020711098
 Transform:
   m_ObjectHideFlags: 0
