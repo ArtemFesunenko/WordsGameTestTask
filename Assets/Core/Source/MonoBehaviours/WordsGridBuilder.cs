@@ -191,15 +191,15 @@ public class WordsGridBuilder : MonoBehaviour
 
     async Task TextSizeAnimationTask(TextMeshProUGUI textMesh, Vector2 targetScale, float duration)
     {
-        var taskTime = duration * 1000;
+        var taskTime = duration;
         float interpolator;
         var startScale = textMesh.transform.localScale;
         while (taskTime > 0)
         {
-            interpolator = Mathf.InverseLerp(duration, 0, taskTime / 1000);
+            interpolator = Mathf.InverseLerp(duration, 0, taskTime);
             textMesh.transform.localScale = Vector2.Lerp(targetScale, startScale, interpolator);
-            await Task.Delay(1);
-            taskTime--;
+            await Task.Yield();
+            taskTime -= Time.deltaTime;
         }
     }
 
