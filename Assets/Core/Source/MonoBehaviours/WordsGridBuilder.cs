@@ -18,6 +18,8 @@ public class WordsGridBuilder : MonoBehaviour
     private char[,] charsGrid = new char[10, 10];
     private List<char> keyChars = new List<char>();
     private List<WordData> openedWords = new List<WordData>();
+    private int actualXSize;
+    private int actualYSize;
     private LettersInputManager inputManager 
     {  
         get 
@@ -99,8 +101,8 @@ public class WordsGridBuilder : MonoBehaviour
 
     private void InitializeGridData()
     {
-        int maxXSize = 0;
-        int maxYSize = 0;
+        actualXSize = 0;
+        actualYSize = 0;
 
         for (int i = 0; i < gridData.WordDatas.Length; i++)
         {
@@ -115,13 +117,13 @@ public class WordsGridBuilder : MonoBehaviour
                 var currentXPos = currentData.Direction == WordDirectionType.horizontal ? roundedXPos + c : roundedXPos;
                 var currentYPos = currentData.Direction == WordDirectionType.vertical ? roundedYPos + c : roundedYPos;
 
-                if (maxXSize < currentXPos)
+                if (actualXSize <= currentXPos)
                 {
-                    maxXSize = currentXPos;
+                    actualXSize = currentXPos;
                 }
-                if (maxYSize < currentYPos)
+                if (actualYSize <= currentYPos)
                 {
-                    maxYSize = currentYPos;
+                    actualYSize = currentYPos;
                 }
 
                 charsGrid[currentXPos, currentYPos] = currentLetter;
@@ -132,13 +134,21 @@ public class WordsGridBuilder : MonoBehaviour
                 }
             }
         }
+
+        actualXSize++;
+        actualYSize++;
     }
 
     private void InstantiateGridView()
     {
-        for (int x = 0; x < objectsGrid.GetLength(0); x++)
+        gridLayout.constraintCount = actualXSize;
+        var rectTransform = GetComponent<RectTransform>();
+        float cellSize = rectTransform.rect.width / actualXSize - gridLayout.spacing.x * actualXSize;
+        gridLayout.cellSize = new Vector2(cellSize, cellSize);
+
+        for (int x = 0; x < actualXSize; x++)
         {
-            for (int y = 0; y < objectsGrid.GetLength(1); y++)
+            for (int y = 0; y < actualYSize; y++)
             {
                 var newGO = Instantiate(gridCellPrefab, slotsContainer);
                 var images = newGO.GetComponentsInChildren<Image>();
