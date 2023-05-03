@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         newGameConfigData.ErrorScreenShakeDuration = 0.15f;
         newGameConfigData.ErrorScreenShakeStrength = 10;
         newGameConfigData.ErrorScreenShakeShakesAmount = 10;
-        File.WriteAllText(dataPath, JsonUtility.ToJson(newGameConfigData));
+        SaveJSONData(JsonUtility.ToJson(newGameConfigData, true), dataPath);
     }
 
 #if UNITY_EDITOR
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         var dataPath = Path.Combine(Application.dataPath, "gridConfig.json");
         var gridData = CreateGridData();
-        SaveGridData(gridData, dataPath);
+        SaveJSONData(JsonUtility.ToJson(gridData, true), dataPath);
     }
 
     private WordsGridData CreateGridData()
@@ -127,13 +127,11 @@ public class GameManager : MonoBehaviour
         return new WordsGridData();
     }
 
-    public void SaveGridData(WordsGridData data, string dataPath)
+    public void SaveJSONData(string dataToStorage, string dataPath)
     {
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(dataPath));
-
-            string dataToStorage = JsonUtility.ToJson(data, true);
 
             using (FileStream stream = new FileStream(dataPath, FileMode.Create))
             {
