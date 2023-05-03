@@ -183,8 +183,11 @@ public class WordsGridBuilder : MonoBehaviour
                 OpenWord(gridData.WordDatas[i]);
             }
         }
-        
-        Debug.Log($"Word matched: {wordMatched}");
+
+        if (wordMatched == false)
+        {
+            GridShakeAnimation(0.15f, 10f);
+        }
     }
 
     private async void OpenWord(WordData wordData)
@@ -214,17 +217,30 @@ public class WordsGridBuilder : MonoBehaviour
         }
     }
 
-    async Task TextSizeAnimationTask(TextMeshProUGUI textMesh, Vector2 targetScale, float time)
+    async Task TextSizeAnimationTask(TextMeshProUGUI textMesh, Vector2 targetScale, float duration)
     {
-        float taskTime = time * 1000;
+        var taskTime = duration * 1000;
         float interpolator;
         var startScale = textMesh.transform.localScale;
         while (taskTime > 0)
         {
-            interpolator = Mathf.InverseLerp(time, 0, taskTime / 1000);
+            interpolator = Mathf.InverseLerp(duration, 0, taskTime / 1000);
             textMesh.transform.localScale = Vector2.Lerp(targetScale, startScale, interpolator);
             await Task.Delay(1);
             taskTime--;
         }
+    }
+
+    async Task GridShakeAnimation(float duration, float strength)
+    {
+        var startPosition = transform.position;
+        var taskTime = duration * 1000;
+        while (taskTime > 0)
+        {
+            transform.position = startPosition + new Vector3(UnityEngine.Random.insideUnitCircle.x, UnityEngine.Random.insideUnitCircle.y, transform.position.z) * strength;
+            await Task.Delay(1);
+            taskTime--;
+        }
+        transform.position = startPosition;
     }
 }
