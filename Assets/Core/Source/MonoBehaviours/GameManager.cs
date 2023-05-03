@@ -13,23 +13,44 @@ public class GameManager : MonoBehaviour
     [SerializeField] private WordsGridBuilder wordsGridBuilder;
     [SerializeField] private LettersInputManager lettersInputManager;
 
+    private GameConfigData gameConfigData;
+
     void Start()
     {
         if (wordsGridBuilder == null) 
             wordsGridBuilder = FindObjectOfType<WordsGridBuilder>();
         if (lettersInputManager == null)
             lettersInputManager = FindObjectOfType<LettersInputManager>();
+
         if (gameConfig == null)
         {
             string gameConfigPath = "gameConfig";
             gameConfig = Resources.Load<TextAsset>(gameConfigPath);
         }
+        gameConfigData = JsonUtility.FromJson<GameConfigData>(gameConfig.text);
+
         if (gridConfig == null)
         {
             string gridConfigPath = "Levels/gridConfig";
             gridConfig = Resources.Load<TextAsset>(gridConfigPath);
         }
         wordsGridBuilder.Initialize(JsonUtility.FromJson<WordsGridData>(gridConfig.text));
+    }
+
+#if UNITY_EDITOR
+    [ContextMenu("Create Example Game Config")]
+    [MenuItem("WordsGame / Create Example Game Config")]
+#endif
+    private void CreateExampleGameConfig()
+    {
+        var dataPath = Path.Combine(Application.dataPath, "gameConfig.json");
+        GameConfigData newGameConfigData = new GameConfigData();
+        newGameConfigData.ErrorSoundEnabled = true;
+        newGameConfigData.ErrorScreenShakeEnabled = true;
+        newGameConfigData.ErrorScreenShakeDuration = 0.15f;
+        newGameConfigData.ErrorScreenShakeStrength = 10;
+        newGameConfigData.ErrorScreenShakeShakesAmount = 10;
+        File.WriteAllText(dataPath, JsonUtility.ToJson(newGameConfigData));
     }
 
 #if UNITY_EDITOR
@@ -40,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         var dataPath = Path.Combine(Application.dataPath, "gridConfig.json");
         var gridData = CreateGridData();
-        Save(gridData, dataPath);
+        SaveGridData(gridData, dataPath);
     }
 
     private WordsGridData CreateGridData()
@@ -81,7 +102,7 @@ public class GameManager : MonoBehaviour
         return gridData;
     }
 
-    public WordsGridData Load(string dataPath)
+    public WordsGridData LoadGridData(string dataPath)
     {
         if (File.Exists(dataPath))
         {
@@ -106,7 +127,7 @@ public class GameManager : MonoBehaviour
         return new WordsGridData();
     }
 
-    public void Save(WordsGridData data, string dataPath)
+    public void SaveGridData(WordsGridData data, string dataPath)
     {
         try
         {
