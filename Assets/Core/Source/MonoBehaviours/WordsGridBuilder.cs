@@ -49,11 +49,7 @@ public class WordsGridBuilder : MonoBehaviour
 
     private void Start()
     {
-        CreateGridData();
-        InitializeGridData();
-        InstantiateGridView();
-
-        inputManager.Initialize(keyChars.ToArray());
+        
     }
 
     private void SubscribeToInputManager()
@@ -66,40 +62,13 @@ public class WordsGridBuilder : MonoBehaviour
         inputManager?.ClearEvent();
     }
 
-    private void CreateGridData()
+    public void Initialize(WordsGridData gridData)
     {
-        gridData = new WordsGridData();
-        gridData.WordDatas = new WordData[5];
+        this.gridData = gridData;
+        InitializeGridData();
+        InstantiateGridView();
 
-        WordData firstWord = new WordData();
-        firstWord.Word = "банк";
-        firstWord.Direction = WordDirectionType.horizontal;
-        firstWord.StartPosition = new Vector2(2,0);
-        gridData.WordDatas[0] = firstWord;
-
-        WordData secondWord = new WordData();
-        secondWord.Word = "клан";
-        secondWord.Direction = WordDirectionType.vertical;
-        secondWord.StartPosition = new Vector2(5, 0);
-        gridData.WordDatas[1] = secondWord;
-
-        WordData thirdWord = new WordData();
-        thirdWord.Word = "бал";
-        thirdWord.Direction = WordDirectionType.horizontal;
-        thirdWord.StartPosition = new Vector2(0, 1);
-        gridData.WordDatas[2] = thirdWord;
-
-        WordData fourthWord = new WordData();
-        fourthWord.Word = "бланк";
-        fourthWord.Direction = WordDirectionType.vertical;
-        fourthWord.StartPosition = new Vector2(2, 0);
-        gridData.WordDatas[3] = fourthWord;
-
-        WordData fifthWord = new WordData();
-        fifthWord.Word = "бак";
-        fifthWord.Direction = WordDirectionType.horizontal;
-        fifthWord.StartPosition = new Vector2(0, 4);
-        gridData.WordDatas[4] = fifthWord;
+        inputManager.Initialize(keyChars.ToArray());
     }
 
     private void InitializeGridData()

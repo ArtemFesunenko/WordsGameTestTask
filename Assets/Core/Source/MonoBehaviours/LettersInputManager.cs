@@ -71,6 +71,7 @@ public class LettersInputManager : MonoBehaviour
 
     private void UnsubscribeFromHandlersEvents()
     {
+        if (letterInputHandlers == null) return;
         for (int i = 0; i < letterInputHandlers.Length; i++)
         {
             var inputHandler = letterInputHandlers[i];

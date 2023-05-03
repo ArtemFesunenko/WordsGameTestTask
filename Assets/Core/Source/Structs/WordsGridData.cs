@@ -1,10 +1,12 @@
 using UnityEngine;
 
+[System.Serializable]
 public struct WordsGridData
 {
     public WordData[] WordDatas;
 }
 
+[System.Serializable]
 public struct WordData
 {
     public Vector2 StartPosition;
@@ -12,6 +14,7 @@ public struct WordData
     public string Word;
 }
 
+[System.Serializable]
 public enum WordDirectionType
 {
     horizontal,
