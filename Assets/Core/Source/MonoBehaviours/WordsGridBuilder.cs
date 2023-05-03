@@ -11,6 +11,7 @@ public class WordsGridBuilder : MonoBehaviour
 {
     [SerializeField] private Transform slotsContainer;
     [SerializeField] private GridLayoutGroup gridLayout;
+    [SerializeField] private GameObject gridCellPrefab;
 
     private WordsGridData gridData;
     private GameObject[,] objectsGrid = new GameObject[10,10];
@@ -48,7 +49,6 @@ public class WordsGridBuilder : MonoBehaviour
         InstantiateGridView();
 
         inputManager.Initialize(keyChars.ToArray());
-        //SubscribeToInputManager();
     }
 
     private void SubscribeToInputManager()
@@ -140,29 +140,22 @@ public class WordsGridBuilder : MonoBehaviour
         {
             for (int y = 0; y < objectsGrid.GetLength(1); y++)
             {
-                var newGO = new GameObject();
-                newGO.transform.parent = slotsContainer;
-                var image = newGO.AddComponent<Image>();
+                var newGO = Instantiate(gridCellPrefab, slotsContainer);
+                var images = newGO.GetComponentsInChildren<Image>();
+                var textMesh = newGO.GetComponentInChildren<TextMeshProUGUI>();
+                textMesh.enabled = false;
                 if (charsGrid[x, y] == char.MinValue)
                 {
-                    image.enabled = false;
+                    for (int i = 0; i < images.Length; i++)
+                    {
+                        images[i].enabled = false;
+                    }
                 }
                 else
                 {
-                    var newGOForText = new GameObject();
-                    newGOForText.transform.SetParent(newGO.transform);
-                    var textMesh = newGOForText.AddComponent<TextMeshProUGUI>();
                     textMesh.text = charsGrid[x, y].ToString();
-                    textMesh.color = UnityEngine.Color.black;
-                    textMesh.alignment = TextAlignmentOptions.Center;
-                    textMesh.enableAutoSizing = true;
-                    textMesh.enabled = false;
-                    var rectTransform = newGOForText.GetComponent<RectTransform>();
-                    rectTransform.anchoredPosition = new Vector2(0.5f, 0.5f);
-                    rectTransform.anchorMin = new Vector2(0, 0);
-                    rectTransform.anchorMax = new Vector2(1, 1);
                 }
-                newGO.name = $"Slot{x},{y}";
+                newGO.name = $"Cell{x},{y}";
                 objectsGrid[x, y] = newGO;
             }
         }
