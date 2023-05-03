@@ -10,11 +10,9 @@ using UnityEngine.UI;
 
 public class WordsGridBuilder : MonoBehaviour
 {
-    [SerializeField] private Transform slotsContainer;
+    public Transform cellsContainer;
     [SerializeField] private GridLayoutGroup gridLayout;
     [SerializeField] private GameObject gridCellPrefab;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip clip;
 
     private WordsGridData gridData;
     private GameObject[,] objectsGrid = new GameObject[10,10];
@@ -36,31 +34,6 @@ public class WordsGridBuilder : MonoBehaviour
         set { _inputManager = value; }
     }
     private LettersInputManager _inputManager;
-
-    private void OnEnable()
-    {
-        SubscribeToInputManager();
-    }
-
-    private void OnDisable()
-    {
-        UnsubscribeFromInputManager();
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    private void SubscribeToInputManager()
-    {
-        inputManager.onInputEntered += EnterInput;
-    }
-
-    private void UnsubscribeFromInputManager()
-    {
-        inputManager?.ClearEvent();
-    }
 
     public void Initialize(WordsGridData gridData)
     {
@@ -122,7 +95,7 @@ public class WordsGridBuilder : MonoBehaviour
         {
             for (int y = 0; y < actualYSize; y++)
             {
-                var newGO = Instantiate(gridCellPrefab, slotsContainer);
+                var newGO = Instantiate(gridCellPrefab, cellsContainer);
                 var images = newGO.GetComponentsInChildren<Image>();
                 var textMesh = newGO.GetComponentInChildren<TextMeshProUGUI>();
                 textMesh.enabled = false;
@@ -143,7 +116,7 @@ public class WordsGridBuilder : MonoBehaviour
         }
     }
 
-    private void EnterInput(string input)
+    public bool InputCheck(string input)
     {
         bool wordMatched = false;
         for (int i = 0; i < gridData.WordDatas.Length; i++)
@@ -154,12 +127,7 @@ public class WordsGridBuilder : MonoBehaviour
                 OpenWord(gridData.WordDatas[i]);
             }
         }
-
-        if (wordMatched == false)
-        {
-            audioSource.PlayOneShot(clip);
-            GridShakeAnimation(0.15f, 10f, 10);
-        }
+        return wordMatched;
     }
 
     private async void OpenWord(WordData wordData)
@@ -201,19 +169,5 @@ public class WordsGridBuilder : MonoBehaviour
             await Task.Yield();
             taskTime -= Time.deltaTime;
         }
-    }
-
-    async Task GridShakeAnimation(float duration, float strength, int shakesAmount = 10)
-    {
-        var startPosition = transform.position;
-        var taskTime = duration * 1000;
-        int tick = Mathf.RoundToInt(taskTime) / shakesAmount;
-        while (taskTime > 0)
-        {
-            transform.position = startPosition + new Vector3(UnityEngine.Random.insideUnitCircle.x, UnityEngine.Random.insideUnitCircle.y, transform.position.z) * strength;
-            await Task.Delay(tick);
-            taskTime -= tick;
-        }
-        transform.position = startPosition;
     }
 }

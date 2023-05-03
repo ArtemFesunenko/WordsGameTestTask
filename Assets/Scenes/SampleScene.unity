@@ -819,10 +819,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8196d97eae78e4db39499b0883a299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameConfig: {fileID: 0}
-  gridConfig: {fileID: 0}
+  gameConfigAsset: {fileID: 0}
+  gridConfigAsset: {fileID: 0}
   wordsGridBuilder: {fileID: 1204163218}
   lettersInputManager: {fileID: 505256165}
+  audioSource: {fileID: 461573147}
+  clip: {fileID: 8300000, guid: ab8cc14de20b99540bf17ab3de20e9dc, type: 3}
 --- !u!4 &1020711098
 Transform:
   m_ObjectHideFlags: 0
@@ -943,11 +945,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d80721b8f0b685547968b16550566266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotsContainer: {fileID: 1204163216}
+  cellsContainer: {fileID: 1204163216}
   gridLayout: {fileID: 1204163217}
   gridCellPrefab: {fileID: 2646485767344512499, guid: 8e531597db5147c438898244d22174bc, type: 3}
-  audioSource: {fileID: 461573147}
-  clip: {fileID: 8300000, guid: ab8cc14de20b99540bf17ab3de20e9dc, type: 3}
 --- !u!1 &1277258339
 GameObject:
   m_ObjectHideFlags: 0

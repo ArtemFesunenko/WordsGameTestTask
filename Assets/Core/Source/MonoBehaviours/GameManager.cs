@@ -3,17 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private TextAsset gameConfig;
-    [SerializeField] private TextAsset gridConfig;
+    [SerializeField] private TextAsset gameConfigAsset;
+    [SerializeField] private TextAsset gridConfigAsset;
     [SerializeField] private WordsGridBuilder wordsGridBuilder;
     [SerializeField] private LettersInputManager lettersInputManager;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
 
     private GameConfigData gameConfigData;
+
+    private void OnEnable()
+    {
+        SubscribeToInputManager();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromInputManager();
+    }
 
     void Start()
     {
@@ -22,19 +35,29 @@ public class GameManager : MonoBehaviour
         if (lettersInputManager == null)
             lettersInputManager = FindObjectOfType<LettersInputManager>();
 
-        if (gameConfig == null)
+        if (gameConfigAsset == null)
         {
             string gameConfigPath = "gameConfig";
-            gameConfig = Resources.Load<TextAsset>(gameConfigPath);
+            gameConfigAsset = Resources.Load<TextAsset>(gameConfigPath);
         }
-        gameConfigData = JsonUtility.FromJson<GameConfigData>(gameConfig.text);
+        gameConfigData = JsonUtility.FromJson<GameConfigData>(gameConfigAsset.text);
 
-        if (gridConfig == null)
+        if (gridConfigAsset == null)
         {
             string gridConfigPath = "Levels/gridConfig";
-            gridConfig = Resources.Load<TextAsset>(gridConfigPath);
+            gridConfigAsset = Resources.Load<TextAsset>(gridConfigPath);
         }
-        wordsGridBuilder.Initialize(JsonUtility.FromJson<WordsGridData>(gridConfig.text));
+        wordsGridBuilder.Initialize(JsonUtility.FromJson<WordsGridData>(gridConfigAsset.text));
+    }
+
+    private void SubscribeToInputManager()
+    {
+        lettersInputManager.onInputEntered += EnterInput;
+    }
+
+    private void UnsubscribeFromInputManager()
+    {
+        lettersInputManager?.ClearEvent();
     }
 
 #if UNITY_EDITOR
@@ -145,5 +168,39 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Error occured when trying to save data to file: " + dataPath + "\n" + e);
         }
+    }
+
+    private void EnterInput(string input)
+    {
+        bool validInput = wordsGridBuilder.InputCheck(input);
+        if (validInput == false)
+        {
+            if (gameConfigData.ErrorSoundEnabled == true)
+            {
+                audioSource.PlayOneShot(clip);
+            }
+            if (gameConfigData.ErrorScreenShakeEnabled == true)
+            {
+                TransformShakeAnimation(
+                    wordsGridBuilder.cellsContainer,
+                    gameConfigData.ErrorScreenShakeDuration,
+                    gameConfigData.ErrorScreenShakeStrength,
+                    gameConfigData.ErrorScreenShakeShakesAmount);
+            }
+        }
+    }
+
+    async Task TransformShakeAnimation(Transform targetTarnsform, float duration = 0.15f, float strength = 10f, int shakesAmount = 10)
+    {
+        var startPosition = targetTarnsform.position;
+        var taskTime = duration * 1000;
+        int tick = Mathf.RoundToInt(taskTime) / shakesAmount;
+        while (taskTime > 0)
+        {
+            targetTarnsform.position = startPosition + new Vector3(UnityEngine.Random.insideUnitCircle.x, UnityEngine.Random.insideUnitCircle.y, transform.position.z) * strength;
+            await Task.Delay(tick);
+            taskTime -= tick;
+        }
+        targetTarnsform.position = startPosition;
     }
 }
