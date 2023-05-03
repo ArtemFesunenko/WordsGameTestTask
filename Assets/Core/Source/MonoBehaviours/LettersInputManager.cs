@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class LettersInputManager : MonoBehaviour
 {
+    public event Action<string> onInputEntered;
+
     [SerializeField] private Vector2 letterSize;
     [SerializeField] private float positioningCircleRadius;
     [SerializeField] private LetterInputHandler letterUIPrefab;
@@ -24,11 +26,7 @@ public class LettersInputManager : MonoBehaviour
 
     private void OnDisable()
     {
-        for (int i = 0; i < letterInputHandlers.Length; i++)
-        {
-            var inputHandler = letterInputHandlers[i];
-            inputHandler.ClearEvents();
-        }
+        UnsubscribeFromHandlersEvents();
     }
 
     public void Initialize(char[] chars)
@@ -68,6 +66,15 @@ public class LettersInputManager : MonoBehaviour
             inputHandler.OnPointerDownEvent += () => PointerDownHandler(currentIndex);
             inputHandler.OnPointerUpEvent += () => PointerUpHandler(currentIndex);
             inputHandler.OnPointerEnterEvent += () => PointerEnterHandler(currentIndex);
+        }
+    }
+
+    private void UnsubscribeFromHandlersEvents()
+    {
+        for (int i = 0; i < letterInputHandlers.Length; i++)
+        {
+            var inputHandler = letterInputHandlers[i];
+            inputHandler?.ClearEvents();
         }
     }
 
@@ -143,6 +150,11 @@ public class LettersInputManager : MonoBehaviour
 
     private void EnterInput(string input)
     {
-        Debug.Log(input);
+        onInputEntered?.Invoke(input);
+    }
+
+    public void ClearEvent()
+    {
+        onInputEntered = null;
     }
 }
