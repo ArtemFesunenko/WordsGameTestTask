@@ -13,6 +13,8 @@ public class WordsGridBuilder : MonoBehaviour
     [SerializeField] private Transform slotsContainer;
     [SerializeField] private GridLayoutGroup gridLayout;
     [SerializeField] private GameObject gridCellPrefab;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
 
     private WordsGridData gridData;
     private GameObject[,] objectsGrid = new GameObject[10,10];
@@ -21,7 +23,7 @@ public class WordsGridBuilder : MonoBehaviour
     private List<WordData> openedWords = new List<WordData>();
     private int actualXSize;
     private int actualYSize;
-    private LettersInputManager inputManager 
+    private LettersInputManager inputManager
     {  
         get 
         {
@@ -186,6 +188,7 @@ public class WordsGridBuilder : MonoBehaviour
 
         if (wordMatched == false)
         {
+            audioSource.PlayOneShot(clip);
             GridShakeAnimation(0.15f, 10f, 10);
         }
     }
