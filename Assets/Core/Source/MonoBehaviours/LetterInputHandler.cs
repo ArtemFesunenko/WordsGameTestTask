@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,7 +12,15 @@ public class LetterInputHandler : MonoBehaviour, IPointerDownHandler, IPointerUp
     public event Action OnPointerUpEvent;
     public event Action OnPointerEnterEvent;
 
+    [SerializeField] private TextMeshProUGUI textMesh;
     [SerializeField] private Image image;
+    [SerializeField] private Color activeColor;
+    [SerializeField] private Color inactiveColor;
+
+    private void Start()
+    {
+        SetActive(false);
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -30,7 +39,8 @@ public class LetterInputHandler : MonoBehaviour, IPointerDownHandler, IPointerUp
 
     public void SetActive(bool active)
     {
-        image.color = active ? Color.green : Color.white;
+        image.color = active ? activeColor : inactiveColor;
+        textMesh.color = active ? Color.white : Color.black;
     }
 
     public void ClearEvents()
